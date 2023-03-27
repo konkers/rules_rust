@@ -211,6 +211,12 @@ fn consolidate_crate_specs(crate_specs: Vec<CrateSpec>) -> anyhow::Result<BTreeS
                 existing.crate_type = "rlib".into();
             }
 
+            // proc_macro targets produce two specs.  One of type "bin" and
+            // one of type "proc_macro".  We want to use the "proc_macro type.
+            if spec.crate_type == "proc-macro" {
+                existing.crate_type = "proc-macro".into();
+            }
+
             // For proc-macro crates that exist within the workspace, there will be a
             // generated crate-spec in both the fastbuild and opt-exec configuration.
             // Prefer proc macro paths with an opt-exec component in the path.

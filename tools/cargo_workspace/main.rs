@@ -100,12 +100,12 @@ fn write_crate_cargo_toml<W: Write>(
     match spec.crate_type.as_str() {
         "rlib" => {
             writeln!(w, "[lib]")?;
-            writeln!(w, "path = \"{prefix}{}\"", spec.root_module)?;
+            writeln!(w, "path = \"{path_prefix}{}\"", spec.root_module)?;
         }
         "proc-macro" => {
             writeln!(w, "[lib]")?;
             writeln!(w, "proc-macro = true")?;
-            writeln!(w, "path = \"{prefix}{}\"", spec.root_module)?;
+            writeln!(w, "path = \"{path_prefix}{}\"", spec.root_module)?;
         }
         // TODO: support binary crates.
         _ => {
@@ -178,6 +178,11 @@ fn generate_cargo_workspace(
         .iter()
         .filter(|(_id, spec)| !is_external_crate(spec))
     {
+        // Skip bin targets as they are not supported.
+        if spec.crate_type == "bin" {
+            continue;
+        }
+
         let crate_dir = cargo_workspace_root.join(&spec.display_name);
         std::fs::create_dir_all(&crate_dir)?;
         let mut f = File::create(&crate_dir.join("Cargo.toml"))?;

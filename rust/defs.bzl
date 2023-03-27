@@ -56,6 +56,7 @@ load(
 load(
     "//rust/private:rustdoc.bzl",
     _rust_doc = "rust_doc",
+    _rust_docs = "rust_docs",
 )
 load(
     "//rust/private:rustdoc_test.bzl",
@@ -92,6 +93,9 @@ rust_test_suite = _rust_test_suite
 # See @rules_rust//rust/private:rust.bzl for a complete description.
 
 rust_doc = _rust_doc
+# See @rules_rust//rust/private:rustdoc.bzl for a complete description.
+
+rust_docs = _rust_docs
 # See @rules_rust//rust/private:rustdoc.bzl for a complete description.
 
 rust_doc_test = _rust_doc_test
