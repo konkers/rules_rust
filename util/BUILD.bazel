@@ -9,3 +9,15 @@ alias(
     actual = "//util/collect_coverage",
     visibility = ["//visibility:public"],
 )
+
+sh_binary(
+    name = "dump_args",
+    srcs = ["dump_args.sh"],
+    visibility = ["//visibility:public"],
+)
+
+sh_binary(
+    name = "run_all",
+    srcs = ["run_all.sh"],
+    visibility = ["//visibility:public"],
+)
