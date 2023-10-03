@@ -1,0 +1,20 @@
+load("//rust:defs.bzl", "rust_binary")
+load("//tools:tool_utils.bzl", "aspect_repository")
+
+rust_binary(
+    name = "gen_cargo_workspace",
+    srcs = ["main.rs"],
+    edition = "2018",
+    rustc_env = {
+        "ASPECT_REPOSITORY": aspect_repository(),
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        "//tools/3rdparty/crates:anyhow",
+        "//tools/3rdparty/crates:clap",
+        "//tools/3rdparty/crates:env_logger",
+        "//tools/3rdparty/crates:log",
+        "//tools/crate_specs",
+        "//util/label",
+    ],
+)
