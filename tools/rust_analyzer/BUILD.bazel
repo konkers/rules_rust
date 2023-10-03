@@ -16,6 +16,7 @@ rust_binary(
         "//tools/3rdparty/crates:clap",
         "//tools/3rdparty/crates:env_logger",
         "//tools/3rdparty/crates:log",
+        "//tools/crate_specs",
         "//util/label",
     ],
 )
@@ -35,6 +36,7 @@ rust_library(
         "//tools/3rdparty/crates:log",
         "//tools/3rdparty/crates:serde",
         "//tools/3rdparty/crates:serde_json",
+        "//tools/crate_specs",
         "//tools/runfiles",
     ],
 )

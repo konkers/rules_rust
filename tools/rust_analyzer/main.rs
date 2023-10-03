@@ -5,7 +5,7 @@ use std::process::Command;
 
 use anyhow::anyhow;
 use clap::Parser;
-use gen_rust_project_lib::generate_crate_info;
+use crate_specs::generate_crate_specs;
 use gen_rust_project_lib::write_rust_project;
 
 // TODO(david): This shells out to an expected rule in the workspace root //:rust_analyzer that the user must define.
@@ -34,7 +34,7 @@ fn main() -> anyhow::Result<()> {
     let rules_rust_name = env!("ASPECT_REPOSITORY");
 
     // Generate the crate specs.
-    generate_crate_info(
+    generate_crate_specs(
         &config.bazel,
         workspace_root,
         rules_rust_name,

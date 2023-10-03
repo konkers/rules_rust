@@ -5,7 +5,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 
-use anyhow::Context;
+use anyhow::{anyhow, Context};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -61,6 +61,36 @@ pub struct CrateSpecSource {
     pub include_dirs: Vec<String>,
 }
 
+pub fn generate_crate_specs(
+    bazel: impl AsRef<Path>,
+    workspace: impl AsRef<Path>,
+    rules_rust: impl AsRef<str>,
+    targets: &[String],
+) -> anyhow::Result<()> {
+    log::debug!("Building rust_crate_spec files for {:?}", targets);
+
+    let output = Command::new(bazel.as_ref())
+        .current_dir(workspace.as_ref())
+        .arg("build")
+        .arg(format!(
+            "--aspects={}//rust:defs.bzl%rust_crate_specs_aspect",
+            rules_rust.as_ref()
+        ))
+        .arg("--output_groups=rust_crate_specs")
+        .args(targets)
+        .output()?;
+
+    if !output.status.success() {
+        return Err(anyhow!(
+            "bazel build failed:({})\n{}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+
+    Ok(())
+}
+
 pub fn get_crate_specs(
     bazel: &Path,
     workspace: &Path,
@@ -80,11 +110,11 @@ pub fn get_crate_specs(
         .arg("aquery")
         .arg("--include_aspects")
         .arg(format!(
-            "--aspects={rules_rust_name}//rust:defs.bzl%rust_analyzer_aspect"
+            "--aspects={rules_rust_name}//rust:defs.bzl%rust_crate_specs_aspect"
         ))
-        .arg("--output_groups=rust_analyzer_crate_spec")
+        .arg("--output_groups=rust_crate_specs")
         .arg(format!(
-            r#"outputs(".*[.]rust_analyzer_crate_spec",{target_pattern})"#
+            r#"outputs(".*[.]rust_crate_spec",{target_pattern})"#
         ))
         .arg("--output=jsonproto")
         .output()?;

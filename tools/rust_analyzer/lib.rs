@@ -1,44 +1,12 @@
 use std::collections::HashMap;
 use std::path::Path;
-use std::process::Command;
 
-use anyhow::anyhow;
+use crate_specs::get_crate_specs;
 use runfiles::Runfiles;
 
-mod aquery;
 mod rust_project;
 
 const SYSROOT_SRC_FILE_RUNFILES_PREFIX: &str = "rules_rust";
-
-pub fn generate_crate_info(
-    bazel: impl AsRef<Path>,
-    workspace: impl AsRef<Path>,
-    rules_rust: impl AsRef<str>,
-    targets: &[String],
-) -> anyhow::Result<()> {
-    log::debug!("Building rust_analyzer_crate_spec files for {:?}", targets);
-
-    let output = Command::new(bazel.as_ref())
-        .current_dir(workspace.as_ref())
-        .arg("build")
-        .arg(format!(
-            "--aspects={}//rust:defs.bzl%rust_analyzer_aspect",
-            rules_rust.as_ref()
-        ))
-        .arg("--output_groups=rust_analyzer_crate_spec")
-        .args(targets)
-        .output()?;
-
-    if !output.status.success() {
-        return Err(anyhow!(
-            "bazel build failed:({})\n{}",
-            output.status,
-            String::from_utf8_lossy(&output.stderr)
-        ));
-    }
-
-    Ok(())
-}
 
 pub fn write_rust_project(
     bazel: impl AsRef<Path>,
@@ -49,7 +17,7 @@ pub fn write_rust_project(
     output_base: impl AsRef<Path>,
     rust_project_path: impl AsRef<Path>,
 ) -> anyhow::Result<()> {
-    let crate_specs = aquery::get_crate_specs(
+    let crate_specs = get_crate_specs(
         bazel.as_ref(),
         workspace.as_ref(),
         execution_root.as_ref(),

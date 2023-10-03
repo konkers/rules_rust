@@ -27,6 +27,10 @@ load(
 )
 load("//rust/private:common.bzl", _rust_common = "rust_common")
 load(
+    "//rust/private:crate_specs.bzl",
+    _rust_crate_specs_aspect = "rust_crate_specs_aspect",
+)
+load(
     "//rust/private:rust.bzl",
     _rust_binary = "rust_binary",
     _rust_library = "rust_library",
@@ -36,10 +40,6 @@ load(
     _rust_static_library = "rust_static_library",
     _rust_test = "rust_test",
     _rust_test_suite = "rust_test_suite",
-)
-load(
-    "//rust/private:rust_analyzer.bzl",
-    _rust_analyzer_aspect = "rust_analyzer_aspect",
 )
 load(
     "//rust/private:rustc.bzl",
@@ -136,9 +136,6 @@ per_crate_rustc_flag = _per_crate_rustc_flag
 rust_common = _rust_common
 # See @rules_rust//rust/private:common.bzl for a complete description.
 
-rust_analyzer_aspect = _rust_analyzer_aspect
-# See @rules_rust//rust/private:rust_analyzer.bzl for a complete description.
-
 rustfmt_aspect = _rustfmt_aspect
 # See @rules_rust//rust/private:rustfmt.bzl for a complete description.
 
@@ -149,3 +146,6 @@ rust_stdlib_filegroup = _rust_stdlib_filegroup
 # See @rules_rust//rust:toolchain.bzl for a complete description.
 
 no_std = _no_std
+
+rust_crate_specs_aspect = _rust_crate_specs_aspect
+# See @rules_rust//rust/private:crate_specs.bzl for a complete description.

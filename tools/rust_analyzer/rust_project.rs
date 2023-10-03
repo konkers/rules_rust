@@ -6,9 +6,8 @@ use std::io::ErrorKind;
 use std::path::Path;
 
 use anyhow::anyhow;
+use crate_specs::CrateSpec;
 use serde::Serialize;
-
-use crate::aquery::CrateSpec;
 
 /// A `rust-project.json` workspace representation. See
 /// [rust-analyzer documentation][rd] for a thorough description of this interface.

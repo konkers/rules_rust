@@ -1,0 +1,14 @@
+load("//rust:defs.bzl", "rust_clippy", "rust_library", "rust_test")
+
+rust_library(
+    name = "crate_specs",
+    srcs = ["lib.rs"],
+    edition = "2018",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//tools/3rdparty/crates:anyhow",
+        "//tools/3rdparty/crates:log",
+        "//tools/3rdparty/crates:serde",
+        "//tools/3rdparty/crates:serde_json",
+    ],
+)
