@@ -52,6 +52,8 @@ pub struct CrateSpec {
     pub env: BTreeMap<String, String>,
     pub target: String,
     pub crate_type: String,
+    pub crate_version: String,
+    pub tags: Vec<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize)]

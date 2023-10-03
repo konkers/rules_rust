@@ -39,6 +39,7 @@ RustCrateSpecsInfo = provider(
         "deps": "List[RustCrateSpecsInfo]: direct dependencies",
         "env": "Dict{String: String}: Environment variables, used for the `env!` macro",
         "proc_macro_dylib_path": "File: compiled shared library output of proc-macro rule",
+        "tags": "List[String]: DOCME",
     },
 )
 
@@ -112,6 +113,11 @@ def _rust_crate_specs_aspect_impl(target, ctx):
 
     crate_spec = ctx.actions.declare_file(ctx.label.name + ".rust_crate_spec")
 
+    if hasattr(ctx.rule.attr, "tags"):
+        tags = ctx.rule.attr.tags
+    else:
+        tags = []
+
     rust_analyzer_info = RustCrateSpecsInfo(
         crate = crate_info,
         cfgs = cfgs,
@@ -120,6 +126,7 @@ def _rust_crate_specs_aspect_impl(target, ctx):
         crate_specs = depset(direct = [crate_spec], transitive = [dep.crate_specs for dep in dep_infos]),
         proc_macro_dylib_path = find_proc_macro_dylib_path(toolchain, target),
         build_info = build_info,
+        tags = tags,
     )
 
     ctx.actions.write(
@@ -197,6 +204,7 @@ def _create_single_crate(ctx, info):
     crate["edition"] = info.crate.edition
     crate["env"] = {}
     crate["crate_type"] = info.crate.type
+    crate["crate_version"] = info.crate.version
 
     # Switch on external/ to determine if crates are in the workspace or remote.
     # TODO: Some folks may want to override this for vendored dependencies.
@@ -237,4 +245,5 @@ def _create_single_crate(ctx, info):
     crate["target"] = find_toolchain(ctx).target_triple.str
     if info.proc_macro_dylib_path != None:
         crate["proc_macro_dylib_path"] = _EXEC_ROOT_TEMPLATE + info.proc_macro_dylib_path
+    crate["tags"] = info.tags
     return crate
