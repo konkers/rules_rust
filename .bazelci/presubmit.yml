@@ -13,6 +13,9 @@ nightly_aspects_flags: &nightly_aspects_flags
   - "--config=clippy"
 bzlmod_flags: &bzlmod_flags
   - "--lockfile_mode=error"
+bzlmod_plus_repo_names_flags: &bzlmod_plus_repo_names_flags
+  # `--lockfile_mode=error` is omitted because the repo names leak into the lock file.
+  - "--incompatible_use_plus_in_repo_names"
 single_rust_channel_targets: &single_rust_channel_targets
   - "--"
   - "//..."
@@ -747,6 +750,46 @@ tasks:
     platform: windows
     working_directory: examples/bzlmod/hello_world
     test_flags: *bzlmod_flags
+    run_targets:
+      - "//third-party:vendor"
+    build_targets:
+      - "@rules_rust//tools/rust_analyzer:gen_rust_project"
+    test_targets:
+      - "//..."
+  ubuntu2004_bzlmod_plus_repo_names_bcr:
+    name: bzlmod BCR presubmit w/ incompatible flags
+    # A newer version than is specified in the .bazel_version file is needed for
+    # --incompatible_use_plus_in_repo_names'
+    bazel: *minimum_bazel_version
+    platform: ubuntu2004
+    working_directory: examples/bzlmod/hello_world
+    test_flags: *bzlmod_plus_repo_names_flags
+    run_targets:
+      - "//third-party:vendor"
+      - "@rules_rust//tools/rust_analyzer:gen_rust_project"
+    test_targets:
+      - "//..."
+  macos_bzlmod_plus_repo_names_bcr:
+    name: bzlmod BCR presubmit w/ incompatible flags
+    # A newer version than is specified in the .bazel_version file is needed for
+    # --incompatible_use_plus_in_repo_names'
+    bazel: *minimum_bazel_version
+    platform: macos
+    working_directory: examples/bzlmod/hello_world
+    test_flags: *bzlmod_plus_repo_names_flags
+    run_targets:
+      - "//third-party:vendor"
+      - "@rules_rust//tools/rust_analyzer:gen_rust_project"
+    test_targets:
+      - "//..."
+  windows_bzlmod_plus_repo_names_bcr:
+    name: bzlmod BCR presubmit w/ incompatible flags
+    # A newer version than is specified in the .bazel_version file is needed for
+    # --incompatible_use_plus_in_repo_names'
+    bazel: *minimum_bazel_version
+    platform: windows
+    working_directory: examples/bzlmod/hello_world
+    test_flags: *bzlmod_plus_repo_names_flags
     run_targets:
       - "//third-party:vendor"
     build_targets:
