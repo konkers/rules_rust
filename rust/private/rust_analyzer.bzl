@@ -277,6 +277,7 @@ def _rust_analyzer_toolchain_impl(ctx):
         proc_macro_srv = ctx.executable.proc_macro_srv,
         rustc = ctx.executable.rustc,
         rustc_srcs = ctx.attr.rustc_srcs,
+        rustc_srcs_subdir = ctx.attr.rustc_srcs_subdir,
     )
 
     return [toolchain]
@@ -302,6 +303,10 @@ rust_analyzer_toolchain = rule(
             doc = "The source code of rustc.",
             mandatory = True,
         ),
+        "rustc_srcs_subdir": attr.string(
+            doc = "Subdirectory relative to the location of `rust_srcs` in which the sources reside.",
+            default = "",
+        ),
     },
 )
 
@@ -316,7 +321,7 @@ def _rust_analyzer_detect_sysroot_impl(ctx):
 
     rustc_srcs = rust_analyzer_toolchain.rustc_srcs
 
-    sysroot_src = rustc_srcs.label.package + "/library"
+    sysroot_src = rustc_srcs.label.package + rust_analyzer_toolchain.rustc_srcs_subdir + "/library"
     if rustc_srcs.label.workspace_root:
         sysroot_src = _OUTPUT_BASE_TEMPLATE + rustc_srcs.label.workspace_root + "/" + sysroot_src
     else:
